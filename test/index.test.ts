@@ -31,6 +31,9 @@ new BddTest()
 	},
 	{		
 		file: 'todo.test.ts'
+	},
+	{
+		file: 'bdd.test.ts'
 	}]
 }))
 .should('pass', ({ files }: TestArguments) => new Promise<void>(async (resolve, reject) => {

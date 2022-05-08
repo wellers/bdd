@@ -35,7 +35,7 @@ export class BddTest {
 	private setup: Function = () => {};
 	private establishContext: Function | {} = {};
 	private observe: Function = () => {};
-	private teardown: Function = () => {};
+	private teardown: Function = () => {};	
 
 	constructor(options?: BddOptions) {
 		if (options) {
@@ -72,7 +72,7 @@ export class BddTest {
 	given(message: String, establishContext: Function | {}): this {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
-		}		
+		}
 
 		this.name = `given ${message}, `;
 		this.establishContext = establishContext;
@@ -80,7 +80,11 @@ export class BddTest {
 		return this;
 	}
 
-	should(message: String, observe: (context: any) => void): this {	
+	should(message: String, observe: (context: any) => void): this {
+		if (this.name === "") {
+			throw Error('given() must be called with a message before should().');
+		}
+		
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -96,6 +100,10 @@ export class BddTest {
 	}
 
 	then(teardown: Function): this {
+		if (this.name === "") {
+			throw Error('both given() and should() must be called with a message before then().');
+		}
+
 		if (typeof teardown !== 'function') {
 			throw Error('teardown must be of type function.');
 		}
