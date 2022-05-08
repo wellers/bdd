@@ -1,0 +1,35 @@
+{
+	"name": "@wellers/bdd",
+	"description": "Fluent BDD helper functions to help make testing with Node.js Test Runner module easier.",	
+	"version": "1.0.0",
+	"author": "Paul Welbourne",		
+	"type": "module",
+	"license": "ISC",		
+	"main": "dist/cjs/index.js",
+	"module": "dist/mjs/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/mjs/index.js",
+			"require": "./dist/cjs/index.js"
+		}
+	},
+	"types": "src/index.d.ts",
+	"scripts": {
+		"build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && sh scripts/fixup",
+		"test": "node --loader ts-node/esm test/index.test.ts"	
+	},
+	"dependencies": {
+		"fastest-validator": "1.12.0"
+	},
+	"devDependencies": {
+		"@types/node": "17.0.31",
+		"ts-node": "10.7.0",
+		"typescript": "4.6.4"
+	},
+	"keywords": [		
+		"test",
+		"node:test",
+		"test runner",
+		"bdd"
+	]	
+}

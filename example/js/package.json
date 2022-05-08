@@ -1,0 +1,12 @@
+{
+	"name": "example-js-app",
+	"description": "An example app utilising bdd module.",
+	"version": "1.0.0",	
+	"scripts": {
+		"link": "npm link ../..",
+		"test": "node test/index.test.js"
+	},
+	"dependencies": {		
+		"@wellers/bdd": "latest"
+	}
+}
