@@ -28,16 +28,18 @@ const optionsSchema = {
 const validator = new Validator();
 const validateOptions = validator.compile(optionsSchema);
 
+type EstablishContext = Promise<Function> | {};
+
 export class BddSpec {
 	private name: string = '';
 	private setup: Function = () => {};
-	private establishContext: Promise<Function> | {} = {};
-	private observe: Function = () => {};
+	private establishContext: EstablishContext = () => { throw Error('context must be defined.'); };
+	private observe: Function = () => { throw Error('observe must be defined.'); };
 	private timeout?: number;			
-	private check: Function = () => {};
+	private check: Function = () => { throw Error('check must be defined.'); };
 	private teardown: Function = () => {};
 	private options: TestOptions | {} = {};	
-
+	
 	constructor(options?: BddSpecOptions) {
 		if (options) {
 			const results = validateOptions(options);
