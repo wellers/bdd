@@ -13,17 +13,19 @@ declare module '@wellers/bdd' {
 		todo?: boolean | string;
 	};
 	export class BddSpec {
-		private timeout;
-		private options;
 		private name;
 		private setup;
 		private establishContext;
 		private observe;
+		private timeout?;
+		private check;
 		private teardown;
+		private options;
 		constructor(options?: BddSpecOptions);
 		before(setup: Function): this;
-		given(message: String, establishContext: () => any): this;
-		should(message: String, observe: (context: any) => void): this;
+		given(message: string, establishContext: () => {}): this;
+		when(message: string, observe: (context: any) => any): this;
+		should(message: string, check: (actual: any) => void): this;
 		then(teardown: Function): this;
 		run(): Promise<void>;
 	}

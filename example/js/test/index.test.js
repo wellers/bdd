@@ -4,32 +4,32 @@ const { BddSpec } = require('@wellers/bdd');
 const { addOne } = require('../lib/index.js');
 
 new BddSpec()
-	.given('num is a string', () => ({ num: 'Hello, World', error: 'num must be of type number.' }))
-	.should('throw an error', ({ num, result, error }) => {
-		let actual;
-
+	.given('num is a string', () => 'Hello, World')
+	.when('addOne is called with num', num => {
 		try {
-			actual = addOne(num);
+			return addOne(num);
 		}
 		catch ({ message }) {
-			strictEqual(message, error);
+			return message
 		}
-
-		strictEqual(actual, result);
 	})
+	.should('throw error', actual => strictEqual(actual, 'num must be of type number.'))
 	.run();
 
 new BddSpec()
-	.given('num is 1', () => ({ num: 1, result: 2 }))
-	.should('return 2', ({ num, result }) => strictEqual(addOne(num), result))
+	.given('num is 1', () => 1)
+	.when('addOne is called with num', num => addOne(num))
+	.should('return 2', actual => strictEqual(actual, 2))
 	.run();
 
 new BddSpec()
-	.given('num is 2', () => ({ num: 2, result: 3 }))
-	.should('return 3', ({ num, result }) => strictEqual(addOne(num), result))
+	.given('num is 2', () => 2)
+	.when('addOne is called with num', num => addOne(num))
+	.should('return 3', actual => strictEqual(actual, 3))
 	.run();
 
 new BddSpec()
-	.given('num is 3', () => ({ num: 3, result: 4 }))
-	.should('return 4', ({ num, result }) => strictEqual(addOne(num), result))
+	.given('num is 3', () => 3)
+	.when('addOne is called with num', num => addOne(num))
+	.should('return 4', actual => strictEqual(actual, 4))
 	.run();

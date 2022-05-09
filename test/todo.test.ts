@@ -14,11 +14,12 @@ new BddSpec()
 	.given('todo is set', {
 		file: 'todos.test.ts',
 		responses: [
-			'ok 1 - given todo is true, should return todo. # TODO',
-			'ok 2 - given todo is a string, should return todo. # TODO this is todo',
+			'ok 1 - given todo is true, when test is run, should return todo. # TODO',
+			'ok 2 - given todo is a string, when test is run, should return todo. # TODO this is todo',
 			'# todo 2'
 		]
 	})
+	.when('test is run', args => args)
 	.should('return todo.', ({ file, responses }: TestArguments) => new Promise<void>(async (resolve, reject) => {
 		const testPath = path.join('./test', file);
 

@@ -3,6 +3,7 @@ import { BddSpec } from '../src/index.js';
 
 new BddSpec()
 	.given('an object as args', { arg: 'someValue' })
+	.when('test is run', args => args)
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -10,6 +11,7 @@ new BddSpec()
 	.given('a function as context', () => ({
 		arg: 'someValue'
 	}))
+	.when('test is run', args => args)
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -17,6 +19,7 @@ new BddSpec()
 	.given('an asynchronous function as context', async () => ({
 		arg: 'someValue'
 	}))
+	.when('test is run', args => args)
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -28,6 +31,7 @@ new BddSpec()
 
 		return promise;
 	})
+	.when('test is run', args => args)
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -36,6 +40,7 @@ new BddSpec()
 		test.arg = 'someValue';
 	})
 	.given('a before function', () => ({}))
+	.when('test is run', args => args)
 	.should('return the function before the test.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -44,6 +49,7 @@ new BddSpec()
 		test.arg = 'someValue';
 	})
 	.given('an asynchronous before function', () => ({}))
+	.when('test is run', args => args)
 	.should('return the function before the test.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -55,6 +61,7 @@ new BddSpec({ timeout: 3000 })
 			}, 100)
 		})
 	})
+	.when('test is run', args => args)
 	.should('pause for set timeout', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
@@ -62,5 +69,6 @@ new BddSpec({ skip: true })
 	.given('skip is true', () => {
 		throw Error("This is an error!");
 	})
+	.when('test is run', args => args)
 	.should('skip test', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();

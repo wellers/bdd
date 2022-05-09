@@ -28,14 +28,15 @@ const optionsSchema = {
 const validator = new Validator();
 const validateOptions = validator.compile(optionsSchema);
 
-export class BddSpec {	
-	private timeout: number | undefined;
-	private options: TestOptions | {} = {};
-	private name: string = "";	
+export class BddSpec {
+	private name: string = '';
 	private setup: Function = () => {};
 	private establishContext: Promise<Function> | {} = {};
 	private observe: Function = () => {};
-	private teardown: Function = () => {};	
+	private timeout?: number;			
+	private check: Function = () => {};
+	private teardown: Function = () => {};
+	private options: TestOptions | {} = {};	
 
 	constructor(options?: BddSpecOptions) {
 		if (options) {
@@ -58,7 +59,7 @@ export class BddSpec {
 			};
 		}
 	}
-	
+
 	before(setup: Function): this {
 		if (typeof setup !== 'function') {
 			throw Error('setup must be of type function.');
@@ -69,7 +70,7 @@ export class BddSpec {
 		return this;
 	}
 
-	given(message: String, establishContext: Function | {}): this {
+	given(message: string, establishContext: Function | {}): this {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -82,21 +83,27 @@ export class BddSpec {
 		return this;
 	}
 
-	should(message: String, observe: (context: any) => void): this {
-		if (this.name === "") {
-			throw Error('given() must be called with a message before should().');
-		}
-		
+	when(message: string, observe: (context: any) => any): this {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
+		}
+		if (this.name === '') {
+			throw Error('given must be called before when.');
 		}
 
 		if (typeof observe !== 'function') {
 			throw Error('observe must be of type function.');
 		}
 
-		this.name = `${this.name}should ${message}`;		
+		this.name = `${this.name}when ${message}, `;		
 		this.observe = observe;
+
+		return this;
+	}
+
+	should(message: string, check: (actual: any) => void): this {
+		this.name = `${this.name}should ${message}`;
+		this.check = check;
 
 		return this;
 	}
@@ -115,7 +122,7 @@ export class BddSpec {
 		return this;
 	}
 
-	async run(): Promise<void> {
+	async run(): Promise<void> {		
 		test(this.name, this.options, async () => {
 			if (this.timeout !== undefined) {
 				return new Promise(resolve => setTimeout(resolve, this.timeout));
@@ -126,8 +133,10 @@ export class BddSpec {
 			if (this.setup !== undefined) {
 				await this.setup(context);
 			}
+			
+			const result = await this.observe(context);
 
-			await this.observe(context);
+			await this.check(result);
 
 			if (this.teardown !== undefined) {
 				await this.teardown(context);

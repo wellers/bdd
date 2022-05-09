@@ -36,6 +36,7 @@ new BddSpec()
 			file: 'bdd.test.ts'
 		}]
 	}))
+	.when('test is run', args => args)
 	.should('pass', ({ files }: TestArguments) => new Promise<void>(async (resolve, reject) => {
 		try {
 			await Promise.all(files.map(async ({ file, only }) => {
