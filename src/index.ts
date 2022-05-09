@@ -33,7 +33,7 @@ export class BddSpec {
 	private options: TestOptions | {} = {};
 	private name: string = "";	
 	private setup: Function = () => {};
-	private establishContext: Function | {} = {};
+	private establishContext: Promise<Function> | {} = {};
 	private observe: Function = () => {};
 	private teardown: Function = () => {};	
 
@@ -75,7 +75,9 @@ export class BddSpec {
 		}
 
 		this.name = `given ${message}, `;
-		this.establishContext = establishContext;
+		this.establishContext = (async () => establishContext instanceof Function
+			? await establishContext()
+			: establishContext)();
 
 		return this;
 	}
@@ -113,15 +115,13 @@ export class BddSpec {
 		return this;
 	}
 
-	async run(): Promise<void> {		
+	async run(): Promise<void> {
 		test(this.name, this.options, async () => {
 			if (this.timeout !== undefined) {
 				return new Promise(resolve => setTimeout(resolve, this.timeout));
-			}
-
-			const context = this.establishContext instanceof Function
-				? await this.establishContext()
-				: this.establishContext;
+			}			
+			
+			const context = await this.establishContext;
 
 			if (this.setup !== undefined) {
 				await this.setup(context);
