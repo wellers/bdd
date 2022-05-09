@@ -1,6 +1,6 @@
-import { BddTest } from "../src/index.js";
+import { BddSpec } from "../src/index.js";
 
-new BddTest()
+new BddSpec()
 	.given('a timeout within the test', () => ({
 		x: setTimeout(() => { }, 5000)
 	}))

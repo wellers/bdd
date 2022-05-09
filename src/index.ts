@@ -2,7 +2,7 @@
 import test from 'node:test';
 import Validator from 'fastest-validator';
 
-export type BddOptions = {
+export type BddSpecOptions = {
 	timeout?: number,
 	concurrency?: number,
 	only?: boolean,
@@ -28,7 +28,7 @@ const optionsSchema = {
 const validator = new Validator();
 const validateOptions = validator.compile(optionsSchema);
 
-export class BddTest {	
+export class BddSpec {	
 	private timeout: number | undefined;
 	private options: TestOptions | {} = {};
 	private name: string = "";	
@@ -37,7 +37,7 @@ export class BddTest {
 	private observe: Function = () => {};
 	private teardown: Function = () => {};	
 
-	constructor(options?: BddOptions) {
+	constructor(options?: BddSpecOptions) {
 		if (options) {
 			const results = validateOptions(options);
 			

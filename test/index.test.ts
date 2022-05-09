@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import child_process from 'child_process';
 import path from 'path';
-import { BddTest } from '../src/index.js';
+import { BddSpec } from '../src/index.js';
 
 const exec = promisify(child_process.exec);
 
@@ -14,7 +14,7 @@ type Test = {
 	only: boolean
 }
 
-new BddTest()
+new BddSpec()
 	.given('tests', () => ({
 		files: [{
 			file: 'arguments.test.ts'

@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import child_process from 'child_process';
 import path from 'path';
-import { BddTest } from '../src/index.js';
+import { BddSpec } from '../src/index.js';
 
 const exec = promisify(child_process.exec);
 
@@ -10,7 +10,7 @@ type TestArguments = {
 	responses: string[]
 };
 
-new BddTest()
+new BddSpec()
 	.given('todo is set', {
 		file: 'todos.test.ts',
 		responses: [

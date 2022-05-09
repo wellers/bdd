@@ -1,18 +1,18 @@
 declare module '@wellers/bdd' {
-	export declare type BddOptions = {
+	export type BddSpecOptions = {
 		timeout?: number;
 		concurrency?: number;
 		only?: boolean;
 		skip?: boolean;
 		todo?: boolean | string;
 	};
-	export declare type TestOptions = {
+	export type TestOptions = {
 		concurrency?: number;
 		only?: boolean;
 		skip?: boolean;
 		todo?: boolean | string;
 	};
-	export declare class BddTest {
+	export class BddSpec {
 		private timeout;
 		private options;
 		private name;
@@ -20,7 +20,7 @@ declare module '@wellers/bdd' {
 		private establishContext;
 		private observe;
 		private teardown;
-		constructor(options?: BddOptions);
+		constructor(options?: BddSpecOptions);
 		before(setup: Function): this;
 		given(message: String, establishContext: () => any): this;
 		should(message: String, observe: (context: any) => void): this;

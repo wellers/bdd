@@ -1,13 +1,13 @@
-import { BddTest } from "../src/index.js";
+import { BddSpec } from "../src/index.js";
 
-new BddTest({ todo: true })
+new BddSpec({ todo: true })
 	.given('todo is true', {
 		arg: 'someValue'
 	})
 	.should('return todo.', () => { })
 	.run();
 
-new BddTest({ todo: 'this is todo' })
+new BddSpec({ todo: 'this is todo' })
 	.given('todo is a string', {
 		arg: 'someValue'
 	})
