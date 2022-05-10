@@ -17,8 +17,8 @@ new BddSpec({ only: true })
 	.given('only is true', {
 		someArg: 'someValue'
 	})
-	.when('test is run', args => args)
-	.should('only run this test.', (test: TestArguments) => {
-		strictEqual(test.someArg, "someValue");
+	.when('test is run', context => context)
+	.should('only run this test.', (actual: TestArguments) => {
+		strictEqual(actual.someArg, "someValue");
 	})
 	.run();

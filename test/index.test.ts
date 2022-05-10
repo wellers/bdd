@@ -15,7 +15,7 @@ type Test = {
 }
 
 new BddSpec()
-	.given('tests', () => ({
+	.given('tests', {
 		files: [{
 			file: 'arguments.test.ts'
 		},
@@ -32,16 +32,21 @@ new BddSpec()
 		{
 			file: 'todo.test.ts'
 		}]
-	}))
-	.when('test is run', args => args)
+	})
+	.when('tests are run', args => args)
 	.should('pass', ({ files }: TestArguments) => new Promise<void>(async (resolve, reject) => {
-		try {
-			await Promise.all(files.map(async ({ file, only }) => {
-				const testPath = path.join('./test', file);
-				const isOnlyTest = only ? '--test-only ' : '';
+		async function runTest({ file, only }: Test): Promise<void> {
+			const testPath = path.join('./test', file);
+			const isOnlyTest = only ? '--test-only ' : '';
 
-				await exec(`node --loader ts-node/esm ${isOnlyTest}${testPath}`);
-			}));
+			const { stdout } = await exec(`node --loader ts-node/esm ${isOnlyTest}${testPath}`);
+
+			console.log(file);
+			console.log(stdout);
+		};
+
+		try {			
+			await Promise.all(files.map(file => runTest(file)));
 		}
 		catch ({ message }) {
 			return reject(message);
