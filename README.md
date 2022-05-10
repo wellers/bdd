@@ -54,17 +54,17 @@ new BddSpec()
 
 Functions on BddSpec:
 
-* `before(setup)` - Optional setup function.
+* `before(setup)` - Optional set-up function.
     * setup - `function` or `async function` - Execute a function prior to execution of the test.
 * `given(message, establishContext)` - Set-up context for test
-    * message - `string` - Display message that is prefixed with 'given '.
-    * establishContext - `object`, `function` or `async function` - Sets the context for the test.
+    * message - `string` - Message that is prefixed with 'given '.
+    * establishContext - `object`, `function` or `async function` - Sets the `context` for the test.
 * `when(message, observe)` - Set-up what we are observing.
-    * message - `string` - Display message that is prefixed with 'when '.
-    * observe - `function` or `async function` - Observation. Errors are caught and returned.
-* `should(message, assert)` - Check the result of the observation.
-    * message - `string` - Display message that is prefixed with 'should '.
-    * assert - `object`, `function` or `async function - Assertion to perform on the return value of observe().
+    * message - `string` - Message that is prefixed with 'when '.
+    * observe - `function(context)` or `async function(context)` - Observation. Returns `actual`. Errors are caught and returned as `actual`.
+* `should(message, assert)` - Assert the result of the observation.
+    * message - `string` - Message that is prefixed with 'should '.
+    * assert - `function(actual)` or `async function(actual)` - Assertion to perform on the return value of observe().
 * `then(teardown)` - Optional teardown function.
     * teardown - `function` or `async function` -  Execute a function after the execution of the test.
 * `run()`- Execute the test.
