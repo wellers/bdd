@@ -8,6 +8,7 @@ This module provides functions for writing fluent BDD-style specifications with 
 import { strictEqual } from "assert";
 import { BddSpec } from "@wellers/bdd";
 
+// function to test
 function addOne(num) {
 	if (typeof num !== 'number') {
 		throw new Error('num must be of type number.');
@@ -43,7 +44,7 @@ new BddSpec()
 
 ## API
 
-`BddSpec(options)`
+**`new BddSpec(options)`**
 
 * options - `object`
     * timeout - `number` - Timeout in ms for this specific test.
@@ -52,23 +53,26 @@ new BddSpec()
     * skip - `boolean` - Skip this test.
     * todo - `boolean`  or `string` - If truthy, the test marked as TODO. If a string is provided, that string is displayed in the test results as the reason why the test is TODO.
 
-Functions on BddSpec:
 
-* `before(setup)` - Optional set-up function.
-    * setup - `function` or `async function` - Execute a function prior to execution of the test.
-* `given(message, establishContext)` - Set-up `context` for test.
-    * message - `string` - Message that is prefixed with "given ".
-    * establishContext - `object`, `function` or `async function` - Sets the `context` for the test.
-* `when(message, observe)` - Set-up what we are observing.
-    * message - `string` - Message that is prefixed with "when ".
-    * observe - `function(context)` or `async function(context)` - The observation. Returns `actual`. Errors are caught and returned as `actual`.
-* `should(message, assert)` - Assert the result of the observation.
-    * message - `string` - Message that is prefixed with "should ".
-    * assert - `function(actual)` or `async function(actual)` - Assertion to perform on the return value of the observation.
-* `shouldThrow(errorMessage)` - Assert the result of the observation throws an Error.    
-    * errorMessage - `string` - Error message that should be thrown by the observation.
-* `then(teardown)` - Optional teardown function.
-    * teardown - `function` or `async function` -  Execute a function after the execution of the test.
-* `run()`- Execute the test.
+**`spec.before(setup)`** - Optional set-up function.
+   * setup - `function` or `async function` - Execute a function prior to execution of the test.
 
+**`spec.given(message, establishContext)`** - Set-up `context` for test.
+   * message - `string` - Message that is prefixed with "given ".
+   * establishContext - `object`, `function` or `async function` - Sets the `context` for the test.
 
+**`spec.when(message, observe)`** - Set-up what to observe.
+   * message - `string` - Message that is prefixed with "when ".
+   * observe - `function(context)` or `async function(context)` - The observation. Returns `actual`. Errors are caught and returned as `actual`.
+
+**`spec.should(message, assert)`** - Assert the result of the observation.
+   * message - `string` - Message that is prefixed with "should ".
+   * assert - `function(actual)` or `async function(actual)` - Assertion to perform on the return value of the observation.
+
+**`spec.shouldThrow(errorMessage)`** - Assert the result of the observation throws an Error.    
+   * errorMessage - `string` - Error message that should be thrown by the observation.
+
+**`spec.then(teardown)`** - Optional teardown function.
+   * teardown - `function` or `async function` -  Execute a function after the execution of the test.
+
+**`spec.run()`** - Execute the test.
