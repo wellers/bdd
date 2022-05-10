@@ -7,7 +7,7 @@ declare module '@wellers/bdd' {
         todo?: boolean | string;
     };
 
-    export type TestOptions = {
+    type TestOptions = {
         concurrency?: number;
         only?: boolean;
         skip?: boolean;
@@ -59,4 +59,6 @@ declare module '@wellers/bdd' {
         then(teardown: Function): ThenOrRun;
         run(): Promise<void>;
     }
+
+	export default BddSpec;
 }

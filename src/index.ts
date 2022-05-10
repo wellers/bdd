@@ -11,7 +11,7 @@ export type BddSpecOptions = {
 	todo?: boolean | string
 }
 
-export type TestOptions = {
+type TestOptions = {
 	concurrency?: number,
 	only?: boolean,
 	skip?: boolean,
@@ -200,3 +200,5 @@ class ThenOrRun {
 		});
 	}
 }
+
+export default BddSpec;
