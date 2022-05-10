@@ -1,0 +1,10 @@
+.vs/
+bin/
+obj/
+Publish/
+
+*.user
+node_modules
+package-lock.json
+test
+examples
