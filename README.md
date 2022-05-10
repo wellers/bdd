@@ -18,8 +18,8 @@ function addOne(num) {
 
 new BddSpec()
 	.given('num is a string', 'Hello, World')
-	.when('addOne is called with num', num => addOne(num))
-	.should('throw error', ({ message }) => strictEqual(message, 'num must be of type number.'))
+	.when('addOne is called with num', num => addOne(num))	
+	.shouldThrow('num must be of type number.')
 	.run();
 
 new BddSpec()
@@ -65,9 +65,8 @@ Functions on BddSpec:
 * `should(message, assert)` - Assert the result of the observation.
     * message - `string` - Message that is prefixed with "should ".
     * assert - `function(actual)` or `async function(actual)` - Assertion to perform on the return value of the observation.
-* `shouldThrow(message, errorMessage)` - Assert the result of the observation.
-    * message - `string` - Message that is prefixed with "should ".
-    * errorMessage - `string` - message property of Error thrown by the observation.
+* `shouldThrow(errorMessage)` - Assert the result of the observation throws an Error.    
+    * errorMessage - `string` - Error message that should be thrown by the observation.
 * `then(teardown)` - Optional teardown function.
     * teardown - `function` or `async function` -  Execute a function after the execution of the test.
 * `run()`- Execute the test.

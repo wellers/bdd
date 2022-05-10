@@ -6,7 +6,7 @@ const { addOne } = require('../lib/index.js');
 new BddSpec()
 	.given('num is a string', 'Hello, World')
 	.when('addOne is called with num', num => addOne(num))
-	.shouldThrow('throw error', 'num must be of type number.')
+	.shouldThrow('num must be of type number.')
 	.run();
 
 new BddSpec()

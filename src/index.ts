@@ -139,8 +139,8 @@ class Should {
 		return new ThenOrRun(this.specification);
 	}
 
-	shouldThrow(message: string, errorMessage: string) {		
-		this.specification.name += `should ${message}`;
+	shouldThrow(errorMessage: string) {		
+		this.specification.name += `should throw ${errorMessage}`;
 		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);		
 
 		return new ThenOrRun(this.specification);

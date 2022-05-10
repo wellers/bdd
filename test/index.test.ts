@@ -34,7 +34,7 @@ new BddSpec()
 		}]
 	})
 	.when('tests are run', args => args)
-	.should('pass', ({ files }: TestArguments) => new Promise<void>(async (resolve, reject) => {
+	.should('all pass', ({ files }: TestArguments) => new Promise<void>(async (resolve, reject) => {
 		async function runTest({ file, only }: Test): Promise<void> {
 			const testPath = path.join('./test', file);
 			const isOnlyTest = only ? '--test-only ' : '';
