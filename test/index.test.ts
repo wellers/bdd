@@ -31,9 +31,6 @@ new BddSpec()
 		},
 		{
 			file: 'todo.test.ts'
-		},
-		{
-			file: 'bdd.test.ts'
 		}]
 	}))
 	.when('test is run', args => args)
