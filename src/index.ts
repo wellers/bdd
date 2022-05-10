@@ -30,16 +30,23 @@ const validateOptions = validator.compile(optionsSchema);
 
 type EstablishContext = Promise<Function> | {};
 
+type Spec = {
+    name?: string;
+	setup?: Function;
+	establishContext?: EstablishContext;
+	observe: Function;
+	assert: Function;
+	timeout?: number;
+	teardown?: Function;
+	options?: TestOptions | {};	
+}
+
 export class BddSpec {
-	private name: string = '';
-	private setup: Function = () => {};
-	private establishContext: EstablishContext = () => { throw Error('context must be defined.'); };
-	private observe: Function = () => { throw Error('observe must be defined.'); };
-	private timeout?: number;			
-	private check: Function = () => { throw Error('check must be defined.'); };
-	private teardown: Function = () => {};
-	private options: TestOptions | {} = {};	
-	
+	private spec: Spec = {
+		observe: () => { throw Error('observe must be set') },
+		assert: () => { throw Error('assert must be set') }
+	};
+
 	constructor(options?: BddSpecOptions) {
 		if (options) {
 			const results = validateOptions(options);
@@ -52,96 +59,125 @@ export class BddSpec {
 
 			const { timeout, concurrency, only, skip, todo } = options;
 
-			this.timeout = timeout;
-			this.options = {
+			this.spec.timeout = timeout;
+			this.spec.options = {
 				concurrency,
 				only,
 				skip,
 				todo				
-			};
+			};	
 		}
 	}
 
-	before(setup: Function): this {
-		if (typeof setup !== 'function') {
+    before(setup: Function) {
+        if (typeof setup !== 'function') {
 			throw Error('setup must be of type function.');
 		}
+        
+        this.spec.setup = setup;
 
-		this.setup = setup;		
+        return new Given(this.spec);
+    }
 
-		return this;
-	}
+    given(message: string, establishContext: Function | {}) {
+        return new Given(this.spec).given(message, establishContext);
+    }
+}
 
-	given(message: string, establishContext: Function | {}): this {
-		if (typeof message !== 'string') {
+class Given {
+    private spec: Spec;
+
+    constructor(spec: Spec) {
+        this.spec = spec;
+    }
+
+    given(message: string, establishContext: Function | {}) {
+        if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
 
-		this.name = `given ${message}, `;
-		this.establishContext = (async () => establishContext instanceof Function
+		this.spec.name = `given ${message}, `;
+		this.spec.establishContext = (async () => establishContext instanceof Function
 			? await establishContext()
 			: establishContext)();
 
-		return this;
-	}
+        return new When(this.spec);
+    }
+}
 
-	when(message: string, observe: (context: any) => any): this {
-		if (typeof message !== 'string') {
+class When {
+    private spec: Spec;
+
+    constructor(spec: Spec) {
+        this.spec = spec;
+    }
+
+    when(message: string, observe: (context: any) => any) {
+        if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
-		}
-		if (this.name === '') {
-			throw Error('given must be called before when.');
 		}
 
 		if (typeof observe !== 'function') {
 			throw Error('observe must be of type function.');
 		}
 
-		this.name = `${this.name}when ${message}, `;		
-		this.observe = observe;
+		this.spec.name = `${this.spec.name}when ${message}, `;		
+		this.spec.observe = observe;
 
-		return this;
-	}
+        return new Should(this.spec);
+    }
+}
 
-	should(message: string, check: (actual: any) => void): this {
-		this.name = `${this.name}should ${message}`;
-		this.check = check;
+class Should {
+    private spec: Spec;
 
-		return this;
-	}
+    constructor(spec: Spec) {
+        this.spec = spec;
+    }
 
-	then(teardown: Function): this {
-		if (this.name === "") {
-			throw Error('both given() and should() must be called with a message before then().');
-		}
+    should(message: string, assert: (actual: any) => void) {
+        this.spec.name = `${this.spec.name}should ${message}`;
+		this.spec.assert = assert;
 
+        return new ThenOrRun(this.spec);
+    }
+}
+
+class ThenOrRun {
+    private spec: Spec;
+
+    constructor(spec: Spec) {
+        this.spec = spec;
+    }
+
+    then(teardown: Function) {
 		if (typeof teardown !== 'function') {
 			throw Error('teardown must be of type function.');
 		}
 
-		this.teardown = teardown;
+		this.spec.teardown = teardown;
 
-		return this;
-	}
+        return new ThenOrRun(this.spec);
+    }
 
-	async run(): Promise<void> {		
-		test(this.name, this.options, async () => {
-			if (this.timeout !== undefined) {
-				return new Promise(resolve => setTimeout(resolve, this.timeout));
+    async run(): Promise<void> {		
+		test(this.spec.name, this.spec.options, async () => {
+			if (this.spec.timeout !== undefined) {
+				return new Promise(resolve => setTimeout(resolve, this.spec.timeout));
 			}			
 			
-			const context = await this.establishContext;
+			const context = await this.spec.establishContext;
 
-			if (this.setup !== undefined) {
-				await this.setup(context);
+			if (this.spec.setup !== undefined) {
+				await this.spec.setup(context);
 			}
 			
-			const result = await this.observe(context);
+			const result = await this.spec.observe(context);
 
-			await this.check(result);
+			await this.spec.assert(result);
 
-			if (this.teardown !== undefined) {
-				await this.teardown(context);
+			if (this.spec.teardown !== undefined) {
+				await this.spec.teardown(context);
 			}
 		});		
 	}
