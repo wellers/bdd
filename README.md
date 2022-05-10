@@ -6,7 +6,7 @@ This module provides functions for writing fluent BDD-style specifications with 
 
 ```js
 import { strictEqual } from "assert";
-import { BddSpec } from "../src/index.js";
+import { BddSpec } from "@wellers/bdd";
 
 function addOne(num) {
 	if (typeof num !== 'number') {
