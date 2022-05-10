@@ -17,11 +17,11 @@ declare module '@wellers/bdd' {
     type EstablishContext = Promise<Function> | {};
 
     type Specification = {
-        name?: string;
+        name: string;
         setup?: Function;
-        establishContext?: EstablishContext;
-        observe: Function;
-        assert: Function;
+        establishContext: EstablishContext;
+        observe: (context: any) => any;
+		assert: (assert: any) => void;
         timeout?: number;
         teardown?: Function;
         options?: TestOptions | {};

@@ -31,11 +31,11 @@ const validateOptions = validator.compile(optionsSchema);
 type EstablishContext = Promise<Function> | {};
 
 type Specification = {
-	name?: string;
+	name: string;
 	setup?: Function;
-	establishContext?: EstablishContext;
-	observe: Function;
-	assert: Function;
+	establishContext: EstablishContext;
+	observe: (context: any) => any;
+	assert: (assert: any) => void;
 	timeout?: number;
 	teardown?: Function;
 	options?: TestOptions | {};
@@ -43,6 +43,8 @@ type Specification = {
 
 export class BddSpec {
 	private specification: Specification = {
+		name: '',
+		establishContext: {},
 		observe: () => { throw Error('observe must be set') },
 		assert: () => { throw Error('assert must be set') }
 	};
@@ -153,7 +155,16 @@ class ThenOrRun {
 	}
 
 	async run(): Promise<void> {
-		const { name, options, timeout, establishContext, setup, observe, assert, teardown } = this.specification;
+		const {
+			name,
+			options,
+			timeout,
+			establishContext,
+			setup,
+			observe,
+			assert,
+			teardown
+		} = this.specification;
 
 		test(name, options, async () => {
 			if (timeout !== undefined) {
