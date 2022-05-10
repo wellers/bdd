@@ -1,6 +1,6 @@
 ## Overview
 
-Node.js v18 introduced the experimental Test Runner module under node:test.
+Node.js v18 introduced the experimental Test Runner module under `node:test`.
 
 This module provides functions for writing fluent BDD-style specifications with Node.js Test Runner module.
 
