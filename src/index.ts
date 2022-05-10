@@ -166,9 +166,14 @@ class ThenOrRun {
 				await setup(context);
 			}
 
-			const result = await observe(context);
+			let actual;
+			try {
+				actual = await observe(context);
+			} catch (err) {
+				actual = err;
+			}
 
-			await assert(result);
+			await assert(actual);
 
 			if (teardown !== undefined) {
 				await teardown(context);
