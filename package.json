@@ -1,6 +1,6 @@
 {
 	"name": "@wellers/bdd",
-	"description": "Fluent BDD helper functions to help make testing with Node.js Test Runner module easier.",	
+	"description": "Functions for writing fluent BDD-style specifications with Node.js Test Runner module.",	
 	"version": "1.0.0",
 	"author": "Paul Welbourne",		
 	"type": "module",
@@ -31,5 +31,10 @@
 		"node:test",
 		"test runner",
 		"bdd"
-	]	
+	],
+	"bugs": {
+		"url": "https://github.com/wellers/bdd/issues",
+		"email": "paulwelbourne@gmail.com"
+	},
+	"homepage": "https://github.com/wellers/bdd#readme"
 }
