@@ -2,8 +2,18 @@ import { strictEqual } from "assert";
 import { BddSpec } from "../src/index.js";
 
 function addOne(num: number) {
+	if (typeof num !== 'number') {
+		throw new Error('num must be of type number.');
+	}
+
 	return num + 1;
 }
+
+new BddSpec()
+	.given('num is a string', 'Hello, World')
+	.when('addOne is called with num', num => addOne(num))
+	.shouldThrow('throw error', 'num must be of type number.')
+	.run();
 
 new BddSpec()
 	.given('num is 0', 0)

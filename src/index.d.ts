@@ -50,6 +50,7 @@ declare module '@wellers/bdd' {
         private specification;
         constructor(specification: Specification);
         should(message: string, assert: (actual: any) => void): ThenOrRun;
+        shouldThrow(message: string, errorMessage: string): ThenOrRun;
     }
 
     class ThenOrRun {

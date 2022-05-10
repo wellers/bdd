@@ -1,6 +1,7 @@
 // @ts-ignore
 import test from 'node:test';
 import Validator from 'fastest-validator';
+import { strictEqual } from 'node:assert';
 
 export type BddSpecOptions = {
 	timeout?: number,
@@ -38,7 +39,7 @@ type Specification = {
 	assert: (assert: any) => void;
 	timeout?: number;
 	teardown?: Function;
-	options?: TestOptions | {};
+	options?: TestOptions | {};	
 }
 
 export class BddSpec {
@@ -46,7 +47,7 @@ export class BddSpec {
 		name: '',
 		establishContext: {},
 		observe: () => { throw Error('observe must be set') },
-		assert: () => { throw Error('assert must be set') }
+		assert: () => { throw Error('assert must be set') }		
 	};
 
 	constructor(options?: BddSpecOptions) {
@@ -134,6 +135,13 @@ class Should {
 	should(message: string, assert: (actual: any) => void) {
 		this.specification.name += `should ${message}`;
 		this.specification.assert = assert;
+
+		return new ThenOrRun(this.specification);
+	}
+
+	shouldThrow(message: string, errorMessage: string) {		
+		this.specification.name += `should ${message}`;
+		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);		
 
 		return new ThenOrRun(this.specification);
 	}

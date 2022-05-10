@@ -65,6 +65,9 @@ Functions on BddSpec:
 * `should(message, assert)` - Assert the result of the observation.
     * message - `string` - Message that is prefixed with "should ".
     * assert - `function(actual)` or `async function(actual)` - Assertion to perform on the return value of the observation.
+* `shouldThrow(message, errorMessage)` - Assert the result of the observation.
+    * message - `string` - Message that is prefixed with "should ".
+    * errorMessage - `string` - message property of Error thrown by the observation.
 * `then(teardown)` - Optional teardown function.
     * teardown - `function` or `async function` -  Execute a function after the execution of the test.
 * `run()`- Execute the test.
