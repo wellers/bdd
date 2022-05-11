@@ -3,19 +3,15 @@ import test from 'node:test';
 import Validator from 'fastest-validator';
 import { strictEqual } from 'node:assert';
 
-type BddSpecOptions = {
-	timeout?: number,
+interface TestOptions {
 	concurrency?: number,
 	only?: boolean,
 	skip?: boolean,
 	todo?: boolean | string
 }
 
-type TestOptions = {
-	concurrency?: number,
-	only?: boolean,
-	skip?: boolean,
-	todo?: boolean | string
+interface BddSpecOptions extends TestOptions {
+	timeout?: number
 }
 
 const optionsSchema = {
@@ -39,7 +35,7 @@ type Specification = {
 	assert: (assert: any) => void;
 	timeout?: number;
 	teardown?: Function;
-	options?: TestOptions | {};	
+	options?: TestOptions;	
 }
 
 class BddSpec {
@@ -60,15 +56,11 @@ class BddSpec {
 				throw Error(message);
 			}
 
-			const { timeout, concurrency, only, skip, todo } = options;
+			const { timeout } = options;			
+			options.timeout = undefined;
 
 			this.specification.timeout = timeout;
-			this.specification.options = {
-				concurrency,
-				only,
-				skip,
-				todo
-			};
+			this.specification.options = <TestOptions>options;
 		}
 	}
 
@@ -100,7 +92,8 @@ class Given {
 		this.specification.name = `given ${message}, `;
 		this.specification.establishContext = (async () => establishContext instanceof Function
 			? await establishContext()
-			: establishContext)();
+			: establishContext
+		)();
 
 		return new When(this.specification);
 	}
