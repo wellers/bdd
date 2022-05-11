@@ -3,7 +3,7 @@ import test from 'node:test';
 import Validator from 'fastest-validator';
 import { strictEqual } from 'node:assert';
 
-export type BddSpecOptions = {
+type BddSpecOptions = {
 	timeout?: number,
 	concurrency?: number,
 	only?: boolean,
@@ -42,7 +42,7 @@ type Specification = {
 	options?: TestOptions | {};	
 }
 
-export class BddSpec {
+class BddSpec {
 	private specification: Specification = {
 		name: '',
 		establishContext: {},
@@ -201,4 +201,4 @@ class ThenOrRun {
 	}
 }
 
-export default BddSpec;
+export { BddSpec, BddSpecOptions }
