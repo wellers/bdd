@@ -18,7 +18,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "sh scripts/cleandist && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && sh scripts/fixup",
+		"prepublish": "scripts/cleandist && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && scripts/fixup",
 		"test": "node --loader ts-node/esm test/index.test.ts"	
 	},
 	"dependencies": {
