@@ -3,6 +3,14 @@ import test from 'node:test';
 import { strictEqual } from 'node:assert';
 import Validator from 'fastest-validator';
 
+/**
+ * BDD Specification options
+ * @prop {number} [timeout] - Timeout in ms for this specific test.
+ * @prop {number} [concurrency] - The number of tests that can be run at the same time. Default: 1.
+ * @prop {boolean} [only] - Only execute this test. --test-only command-line option is required when running tests to use this option.
+ * @prop {boolean} [skip] - Skip this test.
+ * @prop {boolean|string} [todo] -  If truthy, the test marked as TODO. If a string is provided, that string is displayed in the test results as the reason why the test is TODO.
+ */
 interface BddSpecOptions {
 	timeout?: number
 	concurrency?: number,
@@ -38,25 +46,63 @@ type Specification = {
 }
 
 interface BeforeOrGiven {	
-	before(setup: Function): Given;
+	/**
+	* Optional set-up function.	
+	* @param {function} setup - Execute a function prior to execution of the test.	
+	*/
+	before(setup: Function): Given;	
+	
+	/**
+	* Set-up context for test.
+	* @param {string} message - Message that is prefixed with "given ".
+	* @param {function} establishContext - Sets the context for the test.
+	*/
 	given(message: string, establishContext: Function | {}): When;
 }
 
 interface Given {
+	/**
+	* Set-up context for test.
+	* @param {string} message - Message that is prefixed with "given ".
+	* @param {function} establishContext - Sets the context for the test.
+	*/
 	given(message: string, establishContext: Function | {}): When;
 }
 
 interface When {
+	/**
+	* Set-up what to observe.
+	* @param {string} message - Message that is prefixed with "when ".
+	* @param {function} observe - The observation. Returns actual. Errors are caught and returned as actual.
+	*/
 	when(message: string, observe: (context: any) => any): Should;
 }
 
 interface Should {
+	/**
+	* Assert the result of the observation.
+	* @param {string} message - Message that is prefixed with "should ".
+	* @param {function} assert - Assertion to perform on the return value of the observation.
+	*/
 	should(message: string, assert: (actual: any) => void): ThenOrRun;
+	
+	/**
+	* Assert the result of the observation throws an Error.
+	* @param {string} errorMessage - Error message that should be thrown by the observation.	
+	*/
 	shouldThrow(errorMessage: string): ThenOrRun;
 }
 
 interface ThenOrRun {
+	/**
+	* Optional teardown function.
+	* @param {function} teardown - Execute a function after the execution of the test.
+	*/
 	then(teardown: Function): ThenOrRun;
+	
+	/**
+	* Execute the test.	
+	*/
 	run(): Promise<void>;
 }
 
@@ -202,6 +248,10 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 	}
 }
 
+/**
+ * Initialise a new BDD Specification
+ * @param {?BddSpecOptions} options - Optional test options
+ */
 const BddSpec = (options?: BddSpecOptions): BeforeOrGiven => BddSpecification.create(options);
 
 export { BddSpec, BddSpecOptions }
