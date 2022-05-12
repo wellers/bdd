@@ -1,7 +1,6 @@
 import { BddSpec } from "../src/index.js";
 
-BddSpec
-	.create({ todo: true })
+BddSpec({ todo: true })
 	.given('todo is true', {
 		arg: 'someValue'
 	})
@@ -9,8 +8,7 @@ BddSpec
 	.should('return todo.', () => { })
 	.run();
 
-BddSpec
-	.create({ todo: 'this is todo' })
+BddSpec({ todo: 'this is todo' })
 	.given('todo is a string', {
 		arg: 'someValue'
 	})

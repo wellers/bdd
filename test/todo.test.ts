@@ -10,8 +10,7 @@ type TestArguments = {
 	responses: string[]
 };
 
-BddSpec
-	.create()
+BddSpec()
 	.given('todo is set', {
 		file: 'todos.test.ts',
 		responses: [

@@ -14,8 +14,7 @@ type Test = {
 	only: boolean
 }
 
-BddSpec
-	.create()
+BddSpec()
 	.given('tests', {
 		files: [{
 			file: 'arguments.test.ts'

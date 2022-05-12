@@ -60,7 +60,7 @@ interface ThenOrRun {
 	run(): Promise<void>;
 }
 
-class BddSpec implements BeforeOrGiven, Given, When, Should, ThenOrRun {	
+class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun {	
 	private constructor(
 		private specification: Specification
 	) {	}
@@ -89,7 +89,7 @@ class BddSpec implements BeforeOrGiven, Given, When, Should, ThenOrRun {
 			specification.options = <TestOptions>options;
 		}
 
-		return new BddSpec(specification);
+		return new BddSpecification(specification);
 	}
 
 	before(setup: Function): Given {
@@ -201,5 +201,7 @@ class BddSpec implements BeforeOrGiven, Given, When, Should, ThenOrRun {
 		});
 	}
 }
+
+const BddSpec = (options?: BddSpecOptions): BeforeOrGiven => BddSpecification.create(options);
 
 export { BddSpec, BddSpecOptions }
