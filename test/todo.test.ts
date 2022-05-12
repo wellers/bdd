@@ -1,6 +1,6 @@
-import { promisify } from 'util';
 import child_process from 'child_process';
 import path from 'path';
+import { promisify } from 'util';
 import { BddSpec } from '../src/index.js';
 
 const exec = promisify(child_process.exec);
