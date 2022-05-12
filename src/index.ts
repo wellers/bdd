@@ -1,18 +1,17 @@
 // @ts-ignore
 import test from 'node:test';
-import Validator from 'fastest-validator';
 import { strictEqual } from 'node:assert';
+import Validator from 'fastest-validator';
 
-interface TestOptions {
+interface BddSpecOptions {
+	timeout?: number
 	concurrency?: number,
 	only?: boolean,
 	skip?: boolean,
 	todo?: boolean | string
 }
 
-interface BddSpecOptions extends TestOptions {
-	timeout?: number
-}
+type TestOptions = Omit<BddSpecOptions, 'timeout'>;
 
 const optionsSchema = {
 	timeout: { type: "number", optional: true },
@@ -56,7 +55,7 @@ class BddSpec {
 				throw Error(message);
 			}
 
-			const { timeout } = options;			
+			const { timeout } = options;
 			options.timeout = undefined;
 
 			this.specification.timeout = timeout;
@@ -126,6 +125,14 @@ class Should {
 	) { }
 
 	should(message: string, assert: (actual: any) => void) {
+		if (typeof message !== 'string') {
+			throw Error('message must be of type string.');
+		}
+
+		if (typeof assert !== 'function') {
+			throw Error('assert must be of type function.');
+		}
+
 		this.specification.name += `should ${message}`;
 		this.specification.assert = assert;
 
