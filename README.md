@@ -18,39 +18,39 @@ function addOne(num) {
 }
 
 BddSpec
-	.create()
-	.given('num is a string', 'Hello, World')
-	.when('addOne is called with num', num => addOne(num))	
-	.shouldThrow('num must be of type number.')
-	.run();
+  .create()
+  .given('num is a string', 'Hello, World')
+  .when('addOne is called with num', num => addOne(num))	
+  .shouldThrow('num must be of type number.')
+  .run();
 
 BddSpec
-	.create()
-	.given('num is 1', 1)
-	.when('addOne is called with num', num => addOne(num))
-	.should('return 2', actual => strictEqual(actual, 2))
-	.run();
+  .create()
+  .given('num is 1', 1)
+  .when('addOne is called with num', num => addOne(num))
+  .should('return 2', actual => strictEqual(actual, 2))
+  .run();
 
 BddSpec
-	.create()
-	.given('num is 2', 2)
-	.when('addOne is called with num', num => addOne(num))
-	.should('return 3', actual => strictEqual(actual, 3))
-	.run();
+  .create()
+  .given('num is 2', 2)
+  .when('addOne is called with num', num => addOne(num))
+  .should('return 3', actual => strictEqual(actual, 3))
+  .run();
 
 BddSpec
-	.create()
-	.given('num is 3', 3)
-	.when('addOne is called with num', num => addOne(num))
-	.should('return 4', actual => strictEqual(actual, 4))
-	.run();
+  .create()
+  .given('num is 3', 3)
+  .when('addOne is called with num', num => addOne(num))
+  .should('return 4', actual => strictEqual(actual, 4))
+  .run();
 ```
 
 ## API
 
-**`BddSpec.create(options)`**
+**`BddSpec.create(options)`** - Initialise a new specification.
 
-* options - `object`
+* options - `object` - Optional.
     * timeout - `number` - Timeout in ms for this specific test.
     * concurrency - `number` - The number of tests that can be run at the same time. Default: 1.
     * only - `boolean` - Only execute this test. `--test-only` command-line option is required when running tests to use this option.
