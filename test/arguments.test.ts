@@ -1,13 +1,15 @@
 import { strictEqual } from 'assert';
 import { BddSpec } from '../src/index.js';
 
-new BddSpec()
+BddSpec
+	.create()
 	.given('an object as args', { arg: 'someValue' })
 	.when('test is run', args => args)
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec()
+BddSpec
+	.create()
 	.given('a function as context', () => ({
 		arg: 'someValue'
 	}))
@@ -15,7 +17,8 @@ new BddSpec()
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec()
+BddSpec
+	.create()
 	.given('an asynchronous function as context', async () => ({
 		arg: 'someValue'
 	}))
@@ -23,7 +26,8 @@ new BddSpec()
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec()
+BddSpec
+	.create()
 	.given('a promise that defers the event loop', () => {
 		const promise = new Promise(resolve => {
 			setImmediate(() => resolve({ arg: 'someValue' }));
@@ -35,7 +39,8 @@ new BddSpec()
 	.should('return true.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec()
+BddSpec
+	.create()
 	.before((test: any) => {
 		test.arg = 'someValue';
 	})
@@ -44,7 +49,8 @@ new BddSpec()
 	.should('return the function before the test.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec()
+BddSpec
+	.create()
 	.before(async (test: any) => {
 		test.arg = 'someValue';
 	})
@@ -53,7 +59,8 @@ new BddSpec()
 	.should('return the function before the test.', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec({ timeout: 3000 })
+BddSpec
+	.create({ timeout: 3000 })
 	.given('a timeout', async () => {
 		return new Promise(resolve => {
 			setTimeout(() => {
@@ -65,7 +72,8 @@ new BddSpec({ timeout: 3000 })
 	.should('pause for set timeout', ({ arg }) => strictEqual(arg, 'someValue'))
 	.run();
 
-new BddSpec({ skip: true })
+BddSpec
+	.create({ skip: true })
 	.given('skip is true', () => {
 		throw Error("This is an error!");
 	})

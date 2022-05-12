@@ -37,15 +37,42 @@ type Specification = {
 	options?: TestOptions;	
 }
 
-class BddSpec {
-	private specification: Specification = {
-		name: '',
-		establishContext: {},
-		observe: () => { throw Error('observe must be set') },
-		assert: () => { throw Error('assert must be set') }		
-	};
+interface BeforeOrGiven {	
+	before(setup: Function): Given;
+	given(message: string, establishContext: Function | {}): When;
+}
 
-	constructor(options?: BddSpecOptions) {
+interface Given {
+	given(message: string, establishContext: Function | {}): When;
+}
+
+interface When {
+	when(message: string, observe: (context: any) => any): Should;
+}
+
+interface Should {
+	should(message: string, assert: (actual: any) => void): ThenOrRun;
+	shouldThrow(errorMessage: string): ThenOrRun;
+}
+
+interface ThenOrRun {
+	then(teardown: Function): ThenOrRun;
+	run(): Promise<void>;
+}
+
+class BddSpec implements BeforeOrGiven, Given, When, Should, ThenOrRun {	
+	private constructor(
+		private specification: Specification
+	) {	}
+
+	static create(options?: BddSpecOptions): BeforeOrGiven {
+		let specification: Specification = {
+			name: '',
+			establishContext: {},
+			observe: () => { throw Error('observe must be set') },
+			assert: () => { throw Error('assert must be set') }		
+		};
+		
 		if (options) {
 			const results = validateOptions(options);
 
@@ -58,32 +85,24 @@ class BddSpec {
 			const { timeout } = options;
 			options.timeout = undefined;
 
-			this.specification.timeout = timeout;
-			this.specification.options = <TestOptions>options;
+			specification.timeout = timeout;
+			specification.options = <TestOptions>options;
 		}
+
+		return new BddSpec(specification);
 	}
 
-	before(setup: Function) {
+	before(setup: Function): Given {
 		if (typeof setup !== 'function') {
 			throw Error('setup must be of type function.');
 		}
 
-		this.specification.setup = setup;
+		this.specification.setup = setup;		
 
-		return new Given(this.specification);
-	}
+		return this;
+	}	
 
-	given(message: string, establishContext: Function | {}) {
-		return new Given(this.specification).given(message, establishContext);
-	}
-}
-
-class Given {
-	constructor(
-		private specification: Specification
-	) { }
-
-	given(message: string, establishContext: Function | {}) {
+	given(message: string, establishContext: Function | {}): When {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -94,16 +113,10 @@ class Given {
 			: establishContext
 		)();
 
-		return new When(this.specification);
+		return this;
 	}
-}
 
-class When {
-	constructor(
-		private specification: Specification
-	) { }
-
-	when(message: string, observe: (context: any) => any) {
+	when(message: string, observe: (context: any) => any): Should {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -115,16 +128,10 @@ class When {
 		this.specification.name += `when ${message}, `;
 		this.specification.observe = observe;
 
-		return new Should(this.specification);
+		return this;
 	}
-}
 
-class Should {
-	constructor(
-		private specification: Specification
-	) { }
-
-	should(message: string, assert: (actual: any) => void) {
+	should(message: string, assert: (actual: any) => void) : ThenOrRun {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -136,33 +143,27 @@ class Should {
 		this.specification.name += `should ${message}`;
 		this.specification.assert = assert;
 
-		return new ThenOrRun(this.specification);
+		return this;
 	}
 
-	shouldThrow(errorMessage: string) {		
+	shouldThrow(errorMessage: string) : ThenOrRun {		
 		this.specification.name += `should throw ${errorMessage}`;
 		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);		
 
-		return new ThenOrRun(this.specification);
+		return this;
 	}
-}
 
-class ThenOrRun {
-	constructor(
-		private specification: Specification
-	) { }
-
-	then(teardown: Function) {
+	then(teardown: Function): ThenOrRun {
 		if (typeof teardown !== 'function') {
 			throw Error('teardown must be of type function.');
 		}
 
 		this.specification.teardown = teardown;
 
-		return new ThenOrRun(this.specification);
+		return this;
 	}
 
-	async run(): Promise<void> {
+	async run(): Promise<void> {				
 		const {
 			name,
 			options,

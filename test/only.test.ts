@@ -5,7 +5,8 @@ type TestArguments = {
 	someArg: string
 };
 
-new BddSpec()
+BddSpec
+	.create()
 	.given('only is not set', () => {
 		throw new Error("This is an error!");
 	})
@@ -13,7 +14,8 @@ new BddSpec()
 	.should('not run this test.', () => { })
 	.run();
 
-new BddSpec({ only: true })
+BddSpec
+	.create({ only: true })
 	.given('only is true', {
 		someArg: 'someValue'
 	})
