@@ -66,7 +66,7 @@ class BddSpec implements BeforeOrGiven, Given, When, Should, ThenOrRun {
 	) {	}
 
 	static create(options?: BddSpecOptions): BeforeOrGiven {
-		let specification: Specification = {
+		const specification: Specification = {
 			name: '',
 			establishContext: {},
 			observe: () => { throw Error('observe must be set') },
@@ -83,7 +83,7 @@ class BddSpec implements BeforeOrGiven, Given, When, Should, ThenOrRun {
 			}
 
 			const { timeout } = options;
-			options.timeout = undefined;
+			delete options.timeout;
 
 			specification.timeout = timeout;
 			specification.options = <TestOptions>options;
