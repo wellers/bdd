@@ -250,7 +250,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 
 /**
  * Initialise a new BDD Specification
- * @param {?BddSpecOptions} options - Optional test options
+ * @param {BddSpecOptions} [options] - Optional BDD Specification options
  */
 const BddSpec = (options?: BddSpecOptions): BeforeOrGiven => BddSpecification.create(options);
 
