@@ -44,7 +44,7 @@ BddSpec()
 
 ## API
 
-**`BddSpec(options)`**
+**`BddSpec(options)`** - Initialise a new BDD Specification.
 
 * options - `object` - Optional.
     * timeout - `number` - Timeout in ms for this specific test.
