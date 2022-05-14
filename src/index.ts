@@ -202,7 +202,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		}
 
 		if (typeof errorMessage !== 'string') {
-			throw Error('message must be of type string.');
+			throw Error('errorMessage must be of type string.');
 		}
 		
 		this.specification.name += `should throw ${errorMessage}`;
