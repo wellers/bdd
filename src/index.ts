@@ -154,6 +154,10 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 			throw Error('message must be of type string.');
 		}
 
+		if (!establishContext) {
+			throw Error('establishContext is required.');
+		}
+
 		this.specification.name = `given ${message}, `;
 		this.specification.establishContext = (async () => establishContext instanceof Function
 			? await establishContext()
