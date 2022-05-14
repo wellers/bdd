@@ -12,6 +12,12 @@ function addOne(num: number) {
 BddSpec()	
 	.given('num is a string', 'Hello, World')
 	.when('addOne is called with num', num => addOne(num))
+	.shouldThrow()
+	.run();
+
+BddSpec()	
+	.given('num is a string', 'Hello, World')
+	.when('addOne is called with num', num => addOne(num))
 	.shouldThrow('num must be of type number.')
 	.run();
 

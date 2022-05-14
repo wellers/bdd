@@ -46,7 +46,7 @@ BddSpec()
 
 **`BddSpec(options)`** - Initialise a new BDD Specification.
 
-* options - `object` - Optional.
+* options - `object` - Optional BDD Specification options.
     * timeout - `number` - Timeout in ms for this specific test.
     * concurrency - `number` - The number of tests that can be run at the same time. Default: 1.
     * only - `boolean` - Only execute this test. `--test-only` command-line option is required when running tests to use this option.
@@ -79,7 +79,7 @@ BddSpec()
 <br>
 
 **`spec.shouldThrow(errorMessage)`** - Assert the result of the observation throws an Error.    
-   * errorMessage - `string` - Error message that should be thrown by the observation.
+   * errorMessage - `string` - Optional error message that should be thrown by the observation.
 
 <br>
 

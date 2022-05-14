@@ -85,13 +85,13 @@ interface Should {
 	* @param {string} message - Message that is prefixed with "should ".
 	* @param {function} assert - Assertion to perform on the return value of the observation.
 	*/
-	should(message: string, assert: (actual: any) => void): ThenOrRun;
-	
+	should(message: string, assert: (actual: any) => void): ThenOrRun;	
+
 	/**
 	* Assert the result of the observation throws an Error.
-	* @param {string} errorMessage - Error message that should be thrown by the observation.	
+	* @param {string} [errorMessage] - Error message that should be thrown by the observation.	
 	*/
-	shouldThrow(errorMessage: string): ThenOrRun;
+	shouldThrow(errorMessage?: string): ThenOrRun;
 }
 
 interface ThenOrRun {
@@ -191,9 +191,20 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		this.specification.assert = assert;
 
 		return this;
-	}
+	}	
 
-	shouldThrow(errorMessage: string) : ThenOrRun {		
+	shouldThrow(errorMessage: string) : ThenOrRun {	
+		if (!errorMessage) {
+			this.specification.name += 'should throw error';
+			this.specification.assert = (err) => err instanceof Error;
+			
+			return this;
+		}
+
+		if (typeof errorMessage !== 'string') {
+			throw Error('message must be of type string.');
+		}
+		
 		this.specification.name += `should throw ${errorMessage}`;
 		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);		
 
