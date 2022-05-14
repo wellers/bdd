@@ -1,7 +1,7 @@
 {
 	"name": "@wellers/bdd",
 	"description": "Functions for writing fluent BDD-style specifications with Node.js Test Runner module.",	
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"author": "Paul Welbourne",		
 	"type": "module",
 	"license": "ISC",		
