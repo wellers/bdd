@@ -10,7 +10,7 @@ import Validator from 'fastest-validator';
  * @prop {number} [concurrency] - The number of tests that can be run at the same time. Default: 1.
  * @prop {boolean} [only] - Only execute this test. `--test-only` command-line option is required when running tests to use this option.
  * @prop {boolean} [skip] - Skip this test.
- * @prop {boolean|string} [todo] -  If truthy, the test marked as TODO. If a string is provided, that string is displayed in the test results as the reason why the test is TODO.
+ * @prop {boolean|string} [todo] - If truthy, the test marked as TODO. If a string is provided, that string is displayed in the test results as the reason why the test is TODO.
  */
 interface BddSpecOptions {
 	timeout?: number
