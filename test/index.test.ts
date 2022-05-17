@@ -45,7 +45,7 @@ BddSpec()
 			console.log(stdout);
 		};
 
-		try {			
+		try {
 			await Promise.all(files.map(file => runTest(file)));
 		}
 		catch ({ message }) {

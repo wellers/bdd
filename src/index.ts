@@ -43,16 +43,16 @@ type Specification = {
 	assert: (assert: any) => void;
 	timeout?: number;
 	teardown?: Function;
-	options?: TestOptions;	
+	options?: TestOptions;
 }
 
-interface BeforeOrGiven {	
+interface BeforeOrGiven {
 	/**
 	* Optional set-up function.	
 	* @param {function} setup - Execute a function prior to execution of the test.	
 	*/
-	before(setup: Function): Given;	
-	
+	before(setup: Function): Given;
+
 	/**
 	* Set-up context for test.
 	* @param {string} message - Message that is prefixed with "given ".
@@ -85,7 +85,7 @@ interface Should {
 	* @param {string} message - Message that is prefixed with "should ".
 	* @param {function} assert - Assertion to perform on the return value of the observation.
 	*/
-	should(message: string, assert: (actual: any) => void): ThenOrRun;	
+	should(message: string, assert: (actual: any) => void): ThenOrRun;
 
 	/**
 	* Assert the result of the observation throws an Error.
@@ -100,26 +100,26 @@ interface ThenOrRun {
 	* @param {function} teardown - Execute a function after the execution of the test.
 	*/
 	then(teardown: Function): ThenOrRun;
-	
+
 	/**
 	* Execute the test.	
 	*/
 	run(): Promise<void>;
 }
 
-class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun {	
+class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun {
 	private constructor(
 		private specification: Specification
-	) {	}
+	) { }
 
 	static create(options?: BddSpecOptions): BeforeOrGiven {
 		const specification: Specification = {
 			name: '',
 			establishContext: {},
 			observe: () => { throw Error('observe must be set') },
-			assert: () => { throw Error('assert must be set') }		
+			assert: () => { throw Error('assert must be set') }
 		};
-		
+
 		if (options) {
 			const results = validateOptions(options);
 
@@ -144,10 +144,10 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 			throw Error('setup must be of type function.');
 		}
 
-		this.specification.setup = setup;		
+		this.specification.setup = setup;
 
 		return this;
-	}	
+	}
 
 	given(message: string, establishContext: Function | {}): When {
 		if (typeof message !== 'string') {
@@ -182,7 +182,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		return this;
 	}
 
-	should(message: string, assert: (actual: any) => void) : ThenOrRun {
+	should(message: string, assert: (actual: any) => void): ThenOrRun {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -195,22 +195,22 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		this.specification.assert = assert;
 
 		return this;
-	}	
+	}
 
-	shouldThrow(errorMessage: string) : ThenOrRun {	
+	shouldThrow(errorMessage: string): ThenOrRun {
 		if (!errorMessage) {
 			this.specification.name += 'should throw error';
 			this.specification.assert = (err) => err instanceof Error;
-			
+
 			return this;
 		}
 
 		if (typeof errorMessage !== 'string') {
 			throw Error('errorMessage must be of type string.');
 		}
-		
+
 		this.specification.name += `should throw ${errorMessage}`;
-		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);		
+		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);
 
 		return this;
 	}
@@ -225,7 +225,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		return this;
 	}
 
-	async run(): Promise<void> {				
+	async run(): Promise<void> {
 		const {
 			name,
 			options,

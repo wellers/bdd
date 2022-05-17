@@ -9,13 +9,13 @@ function addOne(num: number) {
 	return num + 1;
 }
 
-BddSpec()	
+BddSpec()
 	.given('num is a string', 'Hello, World')
 	.when('addOne is called with num', num => addOne(num))
 	.shouldThrow()
 	.run();
 
-BddSpec()	
+BddSpec()
 	.given('num is a string', 'Hello, World')
 	.when('addOne is called with num', num => addOne(num))
 	.shouldThrow('num must be of type number.')

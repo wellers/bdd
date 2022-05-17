@@ -9,7 +9,7 @@ BddSpec()
 	.given('only is not set', () => {
 		throw new Error("This is an error!");
 	})
-	.when('test is run', () => {})
+	.when('test is run', () => { })
 	.should('not run this test.', () => { })
 	.run();
 
