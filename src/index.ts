@@ -40,11 +40,11 @@ type Observe = (context: any) => any;
 type Assert = (assert: any) => void;
 
 type Specification = {
-	name: string;
+	name: string[];
 	setup?: Function;
 	establishContext: EstablishContext;
 	observe: Observe;
-	assert: Assert;
+	asserts: Assert[];
 	timeout?: number;
 	teardown?: Function;
 	options?: TestOptions;
@@ -82,7 +82,7 @@ interface Should {
 	* @param {string} message - Message that is prefixed with "should ".
 	* @param {function} assert - Assertion to perform on the return value of the observation.
 	*/
-	should(message: string, assert: Assert): Then & Run;
+	should(message: string, assert: Assert): Should & Then & Run;
 
 	/**
 	* Assert the result of the observation throws an Error.
@@ -99,7 +99,7 @@ interface Then {
 	then(teardown: Function): Run;
 }
 
-interface Run {	
+interface Run {
 
 	/**
 	* Execute the test.	
@@ -114,10 +114,10 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 
 	static create(options?: BddSpecOptions): Before & Given {
 		const specification: Specification = {
-			name: '',
+			name: [],
 			establishContext: {},
 			observe: () => { throw Error('observe must be set') },
-			assert: () => { throw Error('assert must be set') }
+			asserts: []
 		};
 
 		if (options) {
@@ -158,7 +158,7 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 			throw Error('establishContext is required.');
 		}
 
-		this.specification.name = `given ${message}, `;
+		this.specification.name.push(`given ${message}`);
 		this.specification.establishContext = (async () => establishContext instanceof Function
 			? await establishContext()
 			: establishContext
@@ -176,13 +176,13 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 			throw Error('observe must be of type function.');
 		}
 
-		this.specification.name += `when ${message}, `;
+		this.specification.name.push(`when ${message}`);
 		this.specification.observe = observe;
 
 		return this;
 	}
 
-	should(message: string, assert: Assert): Then & Run {
+	should(message: string, assert: Assert): Should & Then & Run {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -191,16 +191,16 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 			throw Error('assert must be of type function.');
 		}
 
-		this.specification.name += `should ${message}`;
-		this.specification.assert = assert;
+		this.specification.name.push(`should ${message}`);
+		this.specification.asserts.push(assert);
 
 		return this;
 	}
 
 	shouldThrow(errorMessage: string): Then & Run {
 		if (!errorMessage) {
-			this.specification.name += 'should throw error';
-			this.specification.assert = (err) => err instanceof Error;
+			this.specification.name.push('should throw error');
+			this.specification.asserts.push((err) => err instanceof Error);
 
 			return this;
 		}
@@ -209,8 +209,8 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 			throw Error('errorMessage must be of type string.');
 		}
 
-		this.specification.name += `should throw ${errorMessage}`;
-		this.specification.assert = ({ message }) => strictEqual(message, errorMessage);
+		this.specification.name.push(`should throw ${errorMessage}`);
+		this.specification.asserts.push(({ message }) => strictEqual(message, errorMessage));
 
 		return this;
 	}
@@ -233,11 +233,17 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 			establishContext,
 			setup,
 			observe,
-			assert,
+			asserts,
 			teardown
 		} = this.specification;
 
-		test(name, options, async () => {
+		if (asserts.length === 0) {
+			throw Error('There must be at least one assertion.');
+		}
+
+		const testName = name.join(", ");
+
+		test(testName, options, async () => {
 			if (timeout !== undefined) {
 				return new Promise(resolve => setTimeout(resolve, timeout));
 			}
@@ -248,14 +254,16 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 				await setup(context);
 			}
 
-			let actual;
+			let actual: any;
 			try {
 				actual = await observe(context);
 			} catch (err) {
 				actual = err;
 			}
+			
+			const assertions = asserts.map(async (assert) => assert(actual));
 
-			await assert(actual);
+			await Promise.all(assertions);
 
 			if (teardown !== undefined) {
 				await teardown(context);
