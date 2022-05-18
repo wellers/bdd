@@ -2,6 +2,7 @@ import child_process from 'child_process';
 import path from 'path';
 import { promisify } from 'util';
 import { BddSpec } from '../src/index.js';
+import chalk from 'chalk';
 
 const exec = promisify(child_process.exec);
 
@@ -41,8 +42,8 @@ BddSpec()
 
 			const { stdout } = await exec(`node --loader ts-node/esm ${isOnlyTest}${testPath}`);
 
-			console.log(file);
-			console.log(stdout);
+			console.log(chalk.blue(file));
+			console.log(chalk.grey(stdout));
 		};
 
 		try {

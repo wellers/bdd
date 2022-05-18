@@ -1,7 +1,7 @@
 {
 	"name": "@wellers/bdd",
 	"description": "Functions for writing fluent BDD-style specifications with Node.js Test Runner module.",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"author": "Paul Welbourne",
 	"type": "module",
 	"license": "ISC",
@@ -26,6 +26,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "17.0.31",
+		"chalk": "5.0.1",
 		"ts-node": "10.7.0",
 		"typescript": "4.6.4"
 	},
@@ -33,7 +34,10 @@
 		"test",
 		"node:test",
 		"test runner",
-		"bdd"
+		"bdd",
+		"tdd",
+		"testing"
+
 	],
 	"bugs": {
 		"url": "https://github.com/wellers/bdd/issues",

@@ -1,6 +1,6 @@
 // @ts-ignore
 import test from 'node:test';
-import { strictEqual } from 'node:assert';
+import { strictEqual } from 'assert';
 import Validator from 'fastest-validator';
 
 /**
@@ -35,30 +35,27 @@ const validateOptions = validator.compile(optionsSchema);
 
 type EstablishContext = Promise<Function> | {};
 
+type Observe = (context: any) => any;
+
+type Assert = (assert: any) => void;
+
 type Specification = {
 	name: string;
 	setup?: Function;
 	establishContext: EstablishContext;
-	observe: (context: any) => any;
-	assert: (assert: any) => void;
+	observe: Observe;
+	assert: Observe;
 	timeout?: number;
 	teardown?: Function;
 	options?: TestOptions;
 }
 
-interface BeforeOrGiven {
+interface Before {
 	/**
 	* Optional set-up function.	
 	* @param {function} setup - Execute a function prior to execution of the test.	
 	*/
 	before(setup: Function): Given;
-
-	/**
-	* Set-up context for test.
-	* @param {string} message - Message that is prefixed with "given ".
-	* @param {function} establishContext - Sets the context for the test.
-	*/
-	given(message: string, establishContext: Function | {}): When;
 }
 
 interface Given {
@@ -67,7 +64,7 @@ interface Given {
 	* @param {string} message - Message that is prefixed with "given ".
 	* @param {function} establishContext - Sets the context for the test.
 	*/
-	given(message: string, establishContext: Function | {}): When;
+	given(message: string, establishContext: Function | {}): When
 }
 
 interface When {
@@ -76,7 +73,7 @@ interface When {
 	* @param {string} message - Message that is prefixed with "when ".
 	* @param {function} observe - The observation. Returns actual. Errors are caught and returned as actual.
 	*/
-	when(message: string, observe: (context: any) => any): Should;
+	when(message: string, observe: Observe): Should;
 }
 
 interface Should {
@@ -85,21 +82,24 @@ interface Should {
 	* @param {string} message - Message that is prefixed with "should ".
 	* @param {function} assert - Assertion to perform on the return value of the observation.
 	*/
-	should(message: string, assert: (actual: any) => void): ThenOrRun;
+	should(message: string, assert: Assert): Then & Run;
 
 	/**
 	* Assert the result of the observation throws an Error.
 	* @param {string} [errorMessage] - Error message that should be thrown by the observation.	
 	*/
-	shouldThrow(errorMessage?: string): ThenOrRun;
+	shouldThrow(errorMessage?: string): Then & Run;
 }
 
-interface ThenOrRun {
+interface Then {
 	/**
 	* Optional teardown function.
 	* @param {function} teardown - Execute a function after the execution of the test.
 	*/
-	then(teardown: Function): ThenOrRun;
+	then(teardown: Function): Run;
+}
+
+interface Run {	
 
 	/**
 	* Execute the test.	
@@ -107,12 +107,12 @@ interface ThenOrRun {
 	run(): Promise<void>;
 }
 
-class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun {
+class BddSpecification implements Before, Given, Given, When, Should, Then, Run {
 	private constructor(
 		private specification: Specification
 	) { }
 
-	static create(options?: BddSpecOptions): BeforeOrGiven {
+	static create(options?: BddSpecOptions): Before & Given {
 		const specification: Specification = {
 			name: '',
 			establishContext: {},
@@ -167,7 +167,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		return this;
 	}
 
-	when(message: string, observe: (context: any) => any): Should {
+	when(message: string, observe: Observe): Should {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -182,7 +182,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		return this;
 	}
 
-	should(message: string, assert: (actual: any) => void): ThenOrRun {
+	should(message: string, assert: Assert): Then & Run {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -197,7 +197,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		return this;
 	}
 
-	shouldThrow(errorMessage: string): ThenOrRun {
+	shouldThrow(errorMessage: string): Then & Run {
 		if (!errorMessage) {
 			this.specification.name += 'should throw error';
 			this.specification.assert = (err) => err instanceof Error;
@@ -215,7 +215,7 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
 		return this;
 	}
 
-	then(teardown: Function): ThenOrRun {
+	then(teardown: Function): Run {
 		if (typeof teardown !== 'function') {
 			throw Error('teardown must be of type function.');
 		}
@@ -268,6 +268,6 @@ class BddSpecification implements BeforeOrGiven, Given, When, Should, ThenOrRun 
  * Initialise a new BDD Specification.
  * @param {BddSpecOptions} [options] - Optional BDD Specification options.
  */
-const BddSpec = (options?: BddSpecOptions): BeforeOrGiven => BddSpecification.create(options);
+const BddSpec = (options?: BddSpecOptions): Before & Given => BddSpecification.create(options);
 
 export { BddSpec, BddSpecOptions }
