@@ -44,7 +44,7 @@ type Specification = {
 	setup?: Function;
 	establishContext: EstablishContext;
 	observe: Observe;
-	assert: Observe;
+	assert: Assert;
 	timeout?: number;
 	teardown?: Function;
 	options?: TestOptions;
