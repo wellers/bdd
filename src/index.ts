@@ -198,7 +198,7 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 	}
 
 	shouldThrow(errorMessage: string): Then & Run {
-		if (!errorMessage) {
+		if (typeof errorMessage === 'undefined') {
 			this.specification.name.push('should throw error');
 			this.specification.asserts.push((err) => err instanceof Error);
 
