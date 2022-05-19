@@ -27,7 +27,11 @@ const optionsSchema = {
 	concurrency: { type: "number", optional: true },
 	only: { type: "boolean", default: false },
 	skip: { type: "boolean", default: false },
-	todo: { type: "any", optional: true }
+	todo: [
+		{ type: "boolean", optional: true }, 
+		{ type: "string", optional: true }
+	],
+	$$strict: true
 };
 
 const validator = new Validator();
