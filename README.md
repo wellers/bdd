@@ -89,3 +89,4 @@ BddSpec()
 <br>
 
 **`spec.run()`** - Execute the test.
+   * Returns: `Promise<void>`
