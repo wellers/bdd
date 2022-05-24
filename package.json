@@ -26,6 +26,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "17.0.31",
+		"@wellers/testarray": "1.1.4",
 		"chalk": "5.0.1",
 		"ts-node": "10.7.0",
 		"typescript": "4.6.4"

@@ -35,6 +35,9 @@ BddSpec()
 		},
 		{
 			file: 'shoulds.test.ts'
+		},
+		{
+			file: 'throws.test.ts'		
 		}]
 	})
 	.when('tests are run', args => args)
