@@ -19,6 +19,7 @@
 	],
 	"scripts": {
 		"prepublish": "scripts/cleandist && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && scripts/fixup",
+		"style": "eslint src/",
 		"test": "node --loader ts-node/esm test/index.test.ts"
 	},
 	"dependencies": {
@@ -26,8 +27,11 @@
 	},
 	"devDependencies": {
 		"@types/node": "17.0.31",
+		"@typescript-eslint/eslint-plugin": "5.26.0",
+		"@typescript-eslint/parser": "5.26.0",
 		"@wellers/testarray": "1.1.4",
 		"chalk": "5.0.1",
+		"eslint": "8.0.0",
 		"ts-node": "10.7.0",
 		"typescript": "4.6.4"
 	},

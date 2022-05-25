@@ -28,7 +28,7 @@ const optionsSchema = {
 	only: { type: "boolean", default: false },
 	skip: { type: "boolean", default: false },
 	todo: [
-		{ type: "boolean", optional: true }, 
+		{ type: "boolean", optional: true },
 		{ type: "string", optional: true }
 	],
 	$$strict: true
@@ -37,7 +37,13 @@ const optionsSchema = {
 const validator = new Validator();
 const validateOptions = validator.compile(optionsSchema);
 
-type EstablishContext = Promise<Function> | {};
+type Setup = (args: EstablishContext) => void;
+
+type Context = () => void;
+
+type Teardown = (args: EstablishContext) => void;
+
+type EstablishContext = Promise<Context> | Record<never, never>;
 
 type Observe = (context: any) => any;
 
@@ -45,12 +51,12 @@ type Assert = (assert: any) => void;
 
 type Specification = {
 	name: string[];
-	setup?: Function;
+	setup?: Setup;
 	establishContext: EstablishContext;
 	observe: Observe;
 	asserts: Assert[];
 	timeout?: number;
-	teardown?: Function;
+	teardown?: Teardown;
 	options?: TestOptions;
 }
 
@@ -59,7 +65,7 @@ interface Before {
 	* Optional set-up function.	
 	* @param {function} setup - Execute a function prior to execution of the test.	
 	*/
-	before(setup: Function): Given;
+	before(setup: Setup): Given;
 }
 
 interface Given {
@@ -68,7 +74,7 @@ interface Given {
 	* @param {string} message - Message that is prefixed with "given ".
 	* @param {function} establishContext - Sets the context for the test.
 	*/
-	given(message: string, establishContext: Function | {}): When
+	given(message: string, establishContext: EstablishContext): When
 }
 
 interface When {
@@ -100,7 +106,7 @@ interface Then {
 	* Optional teardown function.
 	* @param {function} teardown - Execute a function after the execution of the test.
 	*/
-	then(teardown: Function): Run;
+	then(teardown: Teardown): Run;
 }
 
 interface Run {
@@ -143,7 +149,7 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 		return new BddSpecification(specification);
 	}
 
-	before(setup: Function): Given {
+	before(setup: Setup): Given {
 		if (typeof setup !== 'function') {
 			throw Error('setup must be of type function.');
 		}
@@ -153,7 +159,7 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 		return this;
 	}
 
-	given(message: string, establishContext: Function | {}): When {
+	given(message: string, establishContext: EstablishContext): When {
 		if (typeof message !== 'string') {
 			throw Error('message must be of type string.');
 		}
@@ -219,7 +225,7 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 		return this;
 	}
 
-	then(teardown: Function): Run {
+	then(teardown: Teardown): Run {
 		if (typeof teardown !== 'function') {
 			throw Error('teardown must be of type function.');
 		}
@@ -264,7 +270,7 @@ class BddSpecification implements Before, Given, Given, When, Should, Then, Run 
 			} catch (err) {
 				actual = err;
 			}
-			
+
 			const assertions = asserts.map(async (assert) => assert(actual));
 
 			await Promise.all(assertions);
